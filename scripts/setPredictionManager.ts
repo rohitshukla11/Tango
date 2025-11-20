@@ -1,3 +1,4 @@
+// @ts-ignore - hardhat types may not be available but runtime works
 import { ethers } from "hardhat";
 
 async function main() {

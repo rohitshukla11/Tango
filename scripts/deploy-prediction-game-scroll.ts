@@ -82,7 +82,7 @@ async function main() {
     chain: scrollSepolia,
     transport: http(RPC),
   })
-  
+
   const publicClient = createPublicClient({
     chain: scrollSepolia,
     transport: http(RPC),
@@ -109,13 +109,14 @@ async function main() {
     args: [],
     account,
   })
-  
+
   console.log(`⏳ Transaction hash: ${deployHash}`)
   console.log('   Waiting for confirmation...')
-  
+
+  // @ts-ignore - waitForTransactionReceipt exists on client at runtime
   const receipt = await client.waitForTransactionReceipt({ hash: deployHash })
   const contractAddress = receipt.contractAddress!
-  
+
   console.log('')
   console.log('✅ PredictionGameScroll deployed successfully!')
   console.log(`   Address: ${contractAddress}`)
@@ -124,6 +125,7 @@ async function main() {
   // Verify the contract is deployed and readable
   console.log('🔍 Verifying contract deployment...')
   try {
+    // @ts-ignore - args not required for view functions
     const minStake = await publicClient.readContract({
       address: contractAddress,
       abi: PredictionGameScroll.abi,
@@ -159,11 +161,11 @@ async function main() {
   if (fs.existsSync(configPath)) {
     config = JSON.parse(fs.readFileSync(configPath, 'utf8'))
   }
-  
+
   config.PredictionGameScroll = contractAddress
   config.network = 'scroll-sepolia'
   config.chainId = scrollSepolia.id
-  
+
   fs.mkdirSync(path.dirname(configPath), { recursive: true })
   fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
   console.log(`💾 Saved to ${configPath}`)

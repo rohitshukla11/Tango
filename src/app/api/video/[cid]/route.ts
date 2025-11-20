@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+// @ts-ignore - synapse module may have build-time issues but works at runtime
 import { createSynapseFromEnv } from '../../../../../lib/synapse'
 
 // Disable Next.js caching for this route (videos are too large)

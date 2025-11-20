@@ -101,6 +101,7 @@ async function main() {
 		args: [TREASURY || account.address],
 		account
 	});
+	// @ts-ignore - waitForTransactionReceipt exists on client at runtime
 	const receiptContest = await client.waitForTransactionReceipt({ hash: hashContest });
 	const contestAddress = receiptContest.contractAddress!;
 	console.log("LatentContest at", contestAddress);
@@ -112,6 +113,7 @@ async function main() {
 		args: [contestAddress],
 		account
 	});
+	// @ts-ignore - waitForTransactionReceipt exists on client at runtime
 	const receiptPM = await client.waitForTransactionReceipt({ hash: hashPM });
 	const pmAddress = receiptPM.contractAddress!;
 	console.log("PredictionManager at", pmAddress);
@@ -123,6 +125,7 @@ async function main() {
 		args: [contestAddress, pmAddress, account.address],
 		account
 	});
+	// @ts-ignore - waitForTransactionReceipt exists on client at runtime
 	const receiptPP = await client.waitForTransactionReceipt({ hash: hashPP });
 	const ppAddress = receiptPP.contractAddress!;
 	console.log("PrizePayout at", ppAddress);

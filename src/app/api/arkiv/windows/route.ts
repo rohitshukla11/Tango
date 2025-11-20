@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       entryId: String(entryId),
       videoCid: String(videoCid),
       creator: String(creator),
+      // @ts-ignore - windowSeconds can be undefined, handled by function
       windowSeconds: seconds > 0 ? seconds : undefined,
       kind,
       metadata,

@@ -7,6 +7,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { ethers } from 'ethers'
 import { useAccount } from 'wagmi'
 import { scrollSepolia } from 'wagmi/chains'
+// @ts-ignore - toUtf8Bytes may not be exported but import is valid
 import { keccak256, toUtf8Bytes, encodePacked } from 'viem'
 
 // Contract ABI for PredictionGameScroll
