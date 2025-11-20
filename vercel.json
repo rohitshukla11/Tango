@@ -1,0 +1,22 @@
+{
+  "functions": {
+    "src/app/api/judge/route.ts": {
+      "maxDuration": 300,
+      "memory": 3008
+    },
+    "src/app/api/extractFrames/route.ts": {
+      "maxDuration": 60,
+      "memory": 3008
+    },
+    "src/app/api/filecoin/**": {
+      "maxDuration": 60
+    },
+    "src/app/api/arkiv/**": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "NODE_OPTIONS": "--max-old-space-size=3072"
+  }
+}
+

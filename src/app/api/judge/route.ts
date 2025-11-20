@@ -10,6 +10,11 @@ import path from "path";
 import { tmpdir } from "os";
 import { randomUUID } from "crypto";
 
+// Vercel serverless function configuration
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+export const maxDuration = 300; // 5 minutes for AI processing
+
 type JudgeTemplate = {
 	name: string;
 	persona: string;
@@ -34,19 +39,19 @@ type AnalysisResult = {
 
 const JUDGE_TEMPLATES: JudgeTemplate[] = [
 	{
-		name: "Professor Patrick",
-		persona: "hyperactive cybercomedian who roasts with affection",
-		style: "chaotic good, rapid-fire observations, lots of memes"
+		name: "Satoshi Nakamoto",
+		persona: "mysterious cryptocurrency pioneer who evaluates with cryptographic precision",
+		style: "enigmatic, technical, philosophical, values decentralization and innovation"
 	},
 	{
-		name: "Sophisticate Sarah",
-		persona: "pretentious music theorist who overanalyzes everything",
-		style: "verbose academic jargon mixed with dad jokes"
+		name: "Vitalik Buterin",
+		persona: "Ethereum co-founder who analyzes with mathematical rigor and philosophical depth",
+		style: "intellectual, verbose, combines technical expertise with deep thinking about systems and society"
 	},
 	{
-		name: "Sergeant Nick",
-		persona: "battle-hardened talent show drill sergeant who always declares 'That's the Nick Way!' in every verdict",
-		style: "tough love, motivational insults, heart of gold"
+		name: "Nicki Nicole",
+		persona: "battle-hardened talent show judge who always declares 'That's the Nicky Way!' in every verdict",
+		style: "tough love, motivational, authentic, heart of gold"
 	}
 ];
 
@@ -211,28 +216,28 @@ function pseudoRandom(seed: number) {
 
 function buildFallbackJudges(analysis: AnalysisResult): JudgeResult[] {
 	const personaExtras: Record<string, { opener: string; closer: string[] }> = {
-		"Professor Patrick": {
-			opener: "Glitchy short-circuits with laughter",
+		"Satoshi Nakamoto": {
+			opener: "The mysterious creator observes with cryptographic precision",
 			closer: [
-				"and sprays confetti pixels everywhere.",
-				"after spotting a meme-worthy move.",
-				"while riffing about the neon chaos."
+				"and notes the hash of excellence in the performance.",
+				"while contemplating the decentralized nature of talent.",
+				"and sees the proof-of-work in every detail."
 			]
 		},
-		"Sophisticate Sarah": {
-			opener: "Professor adjusts their monocle",
+		"Vitalik Buterin": {
+			opener: "The Ethereum co-founder analyzes with mathematical rigor",
 			closer: [
-				"and cites an obscure harmony theorem.",
-				"before diagramming the cadence in chalk.",
-				"while assigning bonus points for phrasing."
+				"and draws connections to complex systems theory.",
+				"while considering the scalability of the performance.",
+				"and reflects on the philosophical implications."
 			]
 		},
-		"Sergeant Nick": {
-			opener: "Sergeant barks a verdict",
+		"Nicki Nicole": {
+			opener: "Nicki delivers a verdict with authentic energy",
 			closer: [
-				"but lets a grin slip through the salute. That's the Nick Way!",
-				"then orders the audience to drop and cheer. That's the Nick Way!",
-				"and stamps approval on the talent dossier. That's the Nick Way!"
+				"but lets a genuine smile show through. That's the Nicky Way!",
+				"then gets the crowd hyped with real talk. That's the Nicky Way!",
+				"and stamps approval with pure authenticity. That's the Nicky Way!"
 			]
 		}
 	};

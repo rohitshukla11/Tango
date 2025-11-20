@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { setupPayments } from '../../../../lib/filecoin'
 import { ethers } from 'ethers'
 
+// Vercel serverless function configuration
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 60
+
 /**
  * API route to handle Filecoin payments using server-side private key
  * This removes the need for users to add Filecoin network to MetaMask

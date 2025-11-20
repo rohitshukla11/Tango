@@ -56,8 +56,26 @@ export default function UploadPage() {
 			const match = entries.find((entry) => entry.id === entryId.toString());
 			if (match) return match;
 		}
+		// If videoCid exists, try to find entry by CID
+		if (videoCid) {
+			const matchByCid = entries.find((entry) => entry.cid === videoCid);
+			if (matchByCid) return matchByCid;
+		}
 		return entries[0];
-	}, [entries, entryId]);
+	}, [entries, entryId, videoCid]);
+
+	// Check if current entry has a prediction
+	const hasPrediction = useMemo(() => {
+		if (!videoCid) return false;
+		// Check selectedEntry first
+		if (selectedEntry?.predictionResult) return true;
+		// Also check if any entry with matching CID or entryId has prediction
+		const matchingEntry = entries.find((entry) => 
+			(entryId !== undefined && entry.id === entryId.toString()) || 
+			entry.cid === videoCid
+		);
+		return !!matchingEntry?.predictionResult;
+	}, [selectedEntry, entries, entryId, videoCid]);
 
 	const handleEntrySelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const value = event.target.value;
@@ -583,10 +601,14 @@ export default function UploadPage() {
 									}
 									handleJudge();
 								}}
-								disabled={!videoCid || judging}
+								disabled={!videoCid || judging || !hasPrediction}
 								className="w-full brutal-btn-blue px-6 py-4 text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed"
 							>
-								{judging ? '⏳ JUDGING...' : '🤖 RUN AI JUDGE'}
+								{judging 
+									? '⏳ JUDGING...' 
+									: !hasPrediction
+										? '⏸️ SUBMIT PREDICTION FIRST'
+										: '🤖 RUN AI JUDGE'}
 							</button>
 
 							{/* AI Score Display - Only shows after clicking judge */}

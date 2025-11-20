@@ -14,7 +14,8 @@ It integrates:
 
 **New to this project?** Start here:
 1. **Setup & Deploy**: [`BASE_BLOCKLOCK_SETUP.md`](./BASE_BLOCKLOCK_SETUP.md) - Complete guide
-2. **Current Status**: [`STATUS.md`](./STATUS.md) - What's working now
+2. **Vercel Deployment**: [`VERCEL_DEPLOYMENT.md`](./VERCEL_DEPLOYMENT.md) - Vercel-specific deployment guide
+3. **Current Status**: [`STATUS.md`](./STATUS.md) - What's working now
 
 ### Network Overview
 

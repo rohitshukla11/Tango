@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getArkivPublicClient, toArkivSummary } from '../../../../../lib/arkiv'
 
+// Vercel serverless function configuration
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const maxDuration = 60 // SSE stream timeout
+
 export async function GET(req: NextRequest) {
   const publicClient = await getArkivPublicClient()
   if (!publicClient) {

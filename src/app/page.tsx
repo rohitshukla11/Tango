@@ -197,25 +197,6 @@ export default function Home() {
 
       {/* Main Feed - TikTok/Instagram Style */}
       <main className="max-w-xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
-        {/* Live Feed Link */}
-        <Link
-          href="/live"
-          className="block brutal-card p-4 sm:p-6 bg-argentina-blue border-4 border-brutal-black hover:bg-argentina-yellow transition-colors group"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-black text-brutal-black/60 uppercase mb-1">Arkiv Live</p>
-              <h3 className="text-lg sm:text-xl font-black text-brutal-black">Real-Time Scoring Feed</h3>
-              <p className="text-xs sm:text-sm font-bold text-brutal-black/70 mt-1">
-                View live scores, predictions, and voting windows →
-              </p>
-            </div>
-            <span className="px-3 py-1 text-xs font-black uppercase border-2 border-brutal-black rounded-full bg-green-300 text-brutal-black group-hover:bg-brutal-black group-hover:text-argentina-yellow transition-colors">
-              LIVE
-            </span>
-          </div>
-        </Link>
-
         {/* Tabs - Chunky Style */}
         <div className="flex gap-2 sm:gap-3 mb-4 sm:mb-6">
           {(['trending', 'recent', 'finalized'] as const).map((tab) => (

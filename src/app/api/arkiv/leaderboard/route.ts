@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server'
 import { queryEntitiesByType } from '../../../../../lib/arkiv'
 
+// Vercel serverless function configuration
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
+
 type ScorePayload = {
   aiScore?: number
   aiScoreScaled?: number
