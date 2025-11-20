@@ -28,6 +28,7 @@ export default function UploadPage() {
 	const [aiReasoning, setAiReasoning] = useState<string>("");
 	const [aiJudges, setAiJudges] = useState<AIJudgeResult[]>([]);
 	const [uploading, setUploading] = useState(false);
+	const [uploadCompleted, setUploadCompleted] = useState(false);
 	const [judging, setJudging] = useState(false);
 	const [preview, setPreview] = useState<string>("");
 	const [downloading, setDownloading] = useState(false);
@@ -91,6 +92,7 @@ export default function UploadPage() {
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const selectedFile = e.target.files?.[0] || null;
 		setFile(selectedFile);
+		setUploadCompleted(false); // Reset upload status when new file is selected
 		if (selectedFile) {
 			setPreview(URL.createObjectURL(selectedFile));
 		}
@@ -180,6 +182,7 @@ export default function UploadPage() {
 			
 			if (!cid) throw new Error("Missing CID from upload response");
 			setVideoCid(cid);
+			setUploadCompleted(true);
 
 			// Generate simple timestamp-based ID for localStorage
 			const entryId = Math.floor(Date.now() / 1000);
@@ -508,10 +511,18 @@ export default function UploadPage() {
 
 							<button
 								onClick={handleUpload}
-								disabled={!file || uploading}
-								className="w-full brutal-btn-blue px-6 py-4 text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+								disabled={!file || uploading || uploadCompleted}
+								className={`w-full px-6 py-4 text-base sm:text-lg disabled:cursor-not-allowed ${
+									uploadCompleted 
+										? 'brutal-btn bg-green-400 border-4 border-brutal-black text-brutal-black' 
+										: 'brutal-btn-blue disabled:opacity-50'
+								}`}
 							>
-								{uploading ? '⏳ UPLOADING...' : '🚀 UPLOAD TO SYNAPSE'}
+								{uploading 
+									? '⏳ UPLOADING...' 
+									: uploadCompleted 
+										? '✅ VIDEO UPLOADED' 
+										: '🚀 UPLOAD VIDEO'}
 							</button>
 						</div>
 					</div>

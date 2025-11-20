@@ -382,12 +382,31 @@ export function useScrollPrediction(config?: UseScrollPredictionConfig) {
   )
 
   const revealPrediction = useCallback(
-    async (entryId: number, scoreScaled: number, salt: string) => {
+    async (entryId: number, predictedScore: number, salt: string) => {
       if (!predictionGameAddress) {
         throw new Error('Prediction contract address missing.')
       }
       if (!isConnected || !address) {
         throw new Error('Wallet not connected.')
+      }
+
+      // Scale the score from 0-10 to 0-1000 (2 decimals)
+      const scoreScaled = Math.round(Math.max(0, Math.min(10, predictedScore)) * 100)
+      
+      // Ensure salt is bytes32 format (0x + 64 hex chars = 66 total)
+      let saltBytes32: string
+      if (salt.startsWith('0x')) {
+        // Remove 0x, pad to 64 chars, add 0x back
+        const hexPart = salt.slice(2).padStart(64, '0')
+        saltBytes32 = `0x${hexPart}`
+      } else {
+        // No 0x prefix, pad to 64 chars and add 0x
+        saltBytes32 = `0x${salt.padStart(64, '0')}`
+      }
+      
+      // Validate salt length (should be 66 chars: 0x + 64 hex)
+      if (saltBytes32.length !== 66) {
+        throw new Error(`Invalid salt format. Expected 64 hex characters, got ${saltBytes32.length - 2}`)
       }
 
       setStatus('⏳ Revealing prediction…')
@@ -405,7 +424,7 @@ export function useScrollPrediction(config?: UseScrollPredictionConfig) {
         const tx = await contract.revealPrediction(
           BigInt(entryId),
           scoreScaled,
-          salt
+          saltBytes32
         )
         
         if (!tx) {
@@ -471,6 +490,59 @@ export function useScrollPrediction(config?: UseScrollPredictionConfig) {
     [address, isConnected, predictionGameAddress],
   )
 
+  const getSettlementResults = useCallback(
+    async (entryId: number, stakeWei: string): Promise<{
+      aiScoreScaled: number
+      predictedScoreScaled: number
+      diff: number
+      payoutWei: bigint
+    } | null> => {
+      if (!predictionGameAddress) {
+        return null
+      }
+
+      try {
+        const ethereum = getEthereumProvider()
+        const provider = new ethers.BrowserProvider(ethereum)
+        const contract = new ethers.Contract(predictionGameAddress, PREDICTION_GAME_SCROLL_ABI, provider)
+
+        // Read prediction data
+        const prediction = await contract.predictions(BigInt(entryId))
+        const aiScoreScaled = Number(await contract.aiScores(BigInt(entryId)))
+
+        // Need both revealed prediction and AI score to calculate settlement
+        if (!prediction.revealed || aiScoreScaled === 0) {
+          return null
+        }
+
+        const predictedScoreScaled = Number(prediction.revealedScore)
+        const diff = Math.abs(predictedScoreScaled - aiScoreScaled)
+        const stakeWeiBigInt = BigInt(stakeWei || '0')
+
+        // Calculate payout based on contract logic (same as settlePrediction)
+        let payoutWei = BigInt(0)
+        if (diff === 0) {
+          payoutWei = stakeWeiBigInt * BigInt(200) / BigInt(100)
+        } else if (diff <= 25) {
+          payoutWei = stakeWeiBigInt * BigInt(50) / BigInt(100)
+        } else if (diff <= 50) {
+          payoutWei = stakeWeiBigInt * BigInt(25) / BigInt(100)
+        }
+
+        return {
+          aiScoreScaled,
+          predictedScoreScaled,
+          diff,
+          payoutWei,
+        }
+      } catch (error) {
+        console.error('[Scroll] Failed to get settlement results:', error)
+        return null
+      }
+    },
+    [predictionGameAddress],
+  )
+
   const setAIScoreOnChain = useCallback(
     async (entryId: number, aiScoreScaled: number) => {
       if (!predictionGameAddress) {
@@ -521,6 +593,7 @@ export function useScrollPrediction(config?: UseScrollPredictionConfig) {
     revealPrediction,
     estimatePredictionCost,
     settlePrediction,
+    getSettlementResults,
     setAIScoreOnChain,
     computeCommitment,
     status,

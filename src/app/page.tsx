@@ -68,7 +68,8 @@ export default function Home() {
 
       if (settlementResults) {
         const { aiScoreScaled, predictedScoreScaled, diff, payoutWei } = settlementResults
-        const win = payoutWei >= stakeWeiBigInt && payoutWei > BigInt(0)
+        // User wins if they get any payout (even if less than stake)
+        const win = payoutWei > BigInt(0)
 
         updatedPrediction = {
           ...entry.predictionResult,
@@ -100,7 +101,8 @@ export default function Home() {
             payoutWei = stakeWeiBigInt * BigInt(25) / BigInt(100)
           }
 
-          const win = payoutWei >= stakeWeiBigInt && payoutWei > BigInt(0)
+          // User wins if they get any payout (even if less than stake)
+          const win = payoutWei > BigInt(0)
 
           updatedPrediction = {
             ...entry.predictionResult,

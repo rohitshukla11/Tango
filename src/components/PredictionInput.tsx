@@ -369,7 +369,15 @@ export default function PredictionInput({ onPredictionSubmitted, entryId, videoC
 				{txHash && (
 					<div className="brutal-card p-2 text-center">
 						<p className="text-xs font-mono font-bold text-brutal-black/60 break-all">
-							Transaction: {txHash}
+							Transaction:{' '}
+							<a
+								href={`${process.env.NEXT_PUBLIC_STAKING_EXPLORER_URL || 'https://sepolia.scrollscan.com'}/tx/${txHash}`}
+								target="_blank"
+								rel="noopener noreferrer"
+								className="text-argentina-blue hover:underline"
+							>
+								{txHash.slice(0, 10)}...{txHash.slice(-8)}
+							</a>
 						</p>
 					</div>
 				)}
