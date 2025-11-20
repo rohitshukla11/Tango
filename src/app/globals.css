@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-brutal-cream text-dark antialiased;
+  }
+  
+  * {
+    @apply font-sans;
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+}
+
+@layer utilities {
+  /* Neo-Brutalism Cards */
+  .brutal-card {
+    @apply bg-brutal-white border-4 border-brutal-black shadow-brutal transition-all hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-brutal-sm;
+  }
+  
+  .brutal-card-blue {
+    @apply bg-argentina-blue border-4 border-brutal-black shadow-brutal-lg;
+  }
+  
+  .brutal-card-yellow {
+    @apply bg-argentina-yellow border-4 border-brutal-black shadow-brutal-lg;
+  }
+  
+  /* Neo-Brutalism Buttons */
+  .brutal-btn {
+    @apply bg-brutal-black text-brutal-white border-4 border-brutal-black font-black uppercase tracking-wider shadow-brutal hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-brutal-sm transition-all;
+  }
+  
+  .brutal-btn-blue {
+    @apply bg-argentina-blue text-brutal-black border-4 border-brutal-black font-black uppercase tracking-wider shadow-brutal hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-brutal-sm transition-all;
+  }
+  
+  .brutal-btn-yellow {
+    @apply bg-argentina-yellow text-brutal-black border-4 border-brutal-black font-black uppercase tracking-wider shadow-brutal hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-brutal-sm transition-all;
+  }
+  
+  /* Social Media Feed */
+  .feed-card {
+    @apply bg-brutal-white border-4 border-brutal-black shadow-brutal-lg mb-6;
+  }
+  
+  /* Text Styles */
+  .text-brutal {
+    @apply font-black uppercase tracking-tight;
+  }
+  
+  /* Argentina Stripe Background */
+  .argentina-bg {
+    background: linear-gradient(to bottom, 
+      #75AADB 0%, 
+      #75AADB 30%, 
+      #FAFAFA 30%, 
+      #FAFAFA 70%, 
+      #75AADB 70%, 
+      #75AADB 100%
+    );
+  }
+  
+  /* Wallet Connect Button Styling */
+  .wallet-connect-wrapper button {
+    @apply bg-brutal-black text-brutal-white border-4 border-brutal-black font-black uppercase tracking-wider shadow-brutal hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-brutal-sm transition-all text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5;
+  }
+}
