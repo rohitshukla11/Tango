@@ -165,7 +165,7 @@ async function publishEntity(params: {
   try {
     const result = await wallet.createEntity({
       payload: stringToPayload(JSON.stringify(payloadWithTimestamps)),
-      contentType: params.contentType ?? 'application/json',
+      contentType: (params.contentType ?? 'application/json') as any,
       attributes: params.attributes,
       expiresIn,
     })

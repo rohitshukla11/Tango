@@ -6,6 +6,11 @@ const nextConfig = {
   experimental: {
     typedRoutes: true
   },
+  transpilePackages: [
+    '@web3-storage/data-segment',
+    'cborg',
+    '@filoz/synapse-sdk'
+  ],
   webpack: (config, { isServer, webpack }) => {
     // Shim optional React Native AsyncStorage used by some browser SDKs (e.g., MetaMask)
     config.resolve.alias = {
@@ -28,8 +33,16 @@ const nextConfig = {
       },
     ];
 
-    // Externalize blocklock-js for server-side builds to avoid Buffer issues
-    // blocklock-js is only used in client components, so it should never be needed server-side
+    // Fix for @web3-storage/data-segment and cborg webpack issues
+    // Configure resolve to properly handle these ESM modules
+    config.resolve = config.resolve || {};
+    config.resolve.fullySpecified = false;
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.ts', '.tsx'],
+    };
+
+    // Externalize problematic modules for server-side builds
+    // These are only used in API routes via Synapse SDK
     if (isServer) {
       // Ensure externals is an array
       if (!Array.isArray(config.externals)) {
@@ -40,6 +53,23 @@ const nextConfig = {
       config.externals.push({
         'blocklock-js': 'commonjs blocklock-js'
       });
+      
+      // Externalize web3-storage and cborg to avoid webpack export analysis issues
+      // These will be available at runtime via node_modules
+      const web3StoragePattern = /^(@web3-storage\/data-segment|cborg|@filoz\/synapse-sdk)$/;
+      const originalExternal = config.externals;
+      config.externals = [
+        ...(Array.isArray(originalExternal) ? originalExternal : [originalExternal]),
+        ({ request }, callback) => {
+          if (web3StoragePattern.test(request)) {
+            return callback(null, `commonjs ${request}`);
+          }
+          if (typeof originalExternal === 'function') {
+            return originalExternal({ request }, callback);
+          }
+          callback();
+        }
+      ];
     } else {
       // For client-side builds, add Buffer polyfill if available
       try {
@@ -65,9 +95,30 @@ const nextConfig = {
       }
     }
 
-    // Disable problematic optimizations that cause Buffer issues during hashing
-      config.optimization = config.optimization || {};
-      config.optimization.providedExports = false;
+    // Disable problematic optimizations that cause Buffer and cborg issues
+    config.optimization = config.optimization || {};
+    config.optimization.providedExports = false;
+    config.optimization.usedExports = false;
+    config.optimization.concatenateModules = false;
+    
+    // Ignore warnings from web3-storage and cborg
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings || []),
+      {
+        module: /node_modules\/@web3-storage/,
+      },
+      {
+        module: /node_modules\/cborg/,
+      },
+      {
+        module: /node_modules\/@web3-storage\/data-segment/,
+      },
+      // Ignore the specific cborg export error
+      {
+        module: /node_modules\/cborg\/cborg\.js/,
+        message: /Cannot get final name for export/,
+      },
+    ];
 
     return config;
   }

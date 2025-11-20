@@ -95,7 +95,7 @@ export function toPayoutVector(inputs: Array<{ wallet: string; amountWei: bigint
 	return inputs.map(i => ({
 		wallet: i.wallet as `0x${string}`,
 		amount: i.amountWei.toString(10),
-		chainId: i.chainId ?? Number(globalThis?.ethereum?.chainId ?? 0)
+                chainId: i.chainId ?? Number((globalThis as any)?.ethereum?.chainId ?? 0)
 	}));
 }
 
