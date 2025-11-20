@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getFile } from "../../../../lib/filecoin";
+// Use dynamic import to avoid bundling Synapse SDK in build
 import { publishScoreEvent } from "../../../../lib/arkiv";
 import { Buffer } from "node:buffer";
 import ffmpeg from "fluent-ffmpeg";
@@ -450,6 +450,7 @@ export async function POST(req: NextRequest) {
 		console.log(`[AI Judge] Fetching video from Synapse/IPFS: ${videoCid}`);
 		
 		// Fetch video from Synapse/IPFS
+		const { getFile } = await import("../../../../lib/filecoin");
 		const videoBuffer = await getFile(videoCid);
 		const videoData = new Uint8Array(videoBuffer);
 		console.log(`[AI Judge] Video fetched: ${videoData.length} bytes`);

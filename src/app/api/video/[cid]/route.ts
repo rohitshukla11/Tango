@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-// @ts-ignore - synapse module may have build-time issues but works at runtime
-import { createSynapseFromEnv } from '../../../../../lib/synapse'
+// Use dynamic import for Synapse SDK to avoid build-time SSR issues
 
 // Disable Next.js caching for this route (videos are too large)
 export const dynamic = 'force-dynamic'
@@ -21,7 +20,8 @@ export async function GET(
     // Get range header for partial content requests
     const range = req.headers.get('range')
     
-    // Initialize Synapse SDK
+    // Initialize Synapse SDK via dynamic import
+    const { createSynapseFromEnv } = await import('../../../../../lib/synapse')
     const synapse = await createSynapseFromEnv()
     
     // Download video from Synapse

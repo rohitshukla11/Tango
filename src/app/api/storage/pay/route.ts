@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { payForStorage } from "../../../../../lib/filecoin";
+// Use dynamic import to avoid bundling Synapse SDK
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
 				{ status: 400 }
 			);
 		}
+		const { payForStorage } = await import("../../../../../lib/filecoin");
 		const r = await payForStorage({ cid, amount, token });
 		return NextResponse.json({ ok: true, txId: r.txId });
 	} catch (e: any) {

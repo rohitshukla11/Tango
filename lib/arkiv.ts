@@ -42,7 +42,7 @@ export interface ArkivWindowEventInput {
   entryId: string
   videoCid: string
   creator: string
-  windowSeconds: number
+  windowSeconds?: number
   kind?: 'prediction' | 'voting' | 'staking'
   metadata?: Record<string, unknown>
 }

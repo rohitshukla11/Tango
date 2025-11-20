@@ -184,8 +184,7 @@ export default function PredictionInput({ onPredictionSubmitted, entryId, videoC
 					transactionHash: result.transactionHash,
 					unlockBlock: result.unlockBlock.toString(),
 					stakeWei: result.stakeWei.toString(),
-					// @ts-ignore - totalValueWei is set when success is true
-					totalValueWei: result.totalValueWei.toString(),
+					totalValueWei: result.totalValueWei?.toString() ?? '0',
 					predictedScore: scoreValue,
 					submittedAt: Date.now(),
 					salt: result.salt,
@@ -218,8 +217,7 @@ export default function PredictionInput({ onPredictionSubmitted, entryId, videoC
 						expiresInSeconds: PREDICTION_TTL_SECONDS,
 						metadata: {
 							submittedAt: updatedEntry.predictionResult?.submittedAt,
-							// @ts-ignore - totalValueWei is set when success is true
-							totalValueWei: result.totalValueWei.toString(),
+							totalValueWei: result.totalValueWei?.toString() ?? '0',
 							salt: result.salt,
 							commitment: result.commitment,
 						},

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useWalletClient } from "wagmi";
 import { parseEther } from "viem";
-import { getFile } from "../../../lib/filecoin";
+// Removed direct import of getFile - use API route to avoid bundling Synapse SDK server deps
 import { saveUploadedEntry, useEntries, type AIJudgeResult, type Entry } from "@/hooks/useEntries";
 import PredictionInput from "@/components/PredictionInput";
 import { useScrollPrediction } from "@/hooks/useScrollPrediction";
@@ -261,7 +261,12 @@ export default function UploadPage() {
 		
 		try {
 			console.log("[Download] Starting download for CID:", videoCid);
-			const data = await getFile(videoCid);
+			// Use API route instead of direct import to avoid bundling Synapse SDK
+			const response = await fetch(`/api/video/${videoCid}`);
+			if (!response.ok) {
+				throw new Error(`Failed to download video: ${response.status} ${response.statusText}`);
+			}
+			const data = await response.arrayBuffer();
 			
 			// Create a blob from the data
 			const blob = new Blob([data], { type: "video/mp4" });

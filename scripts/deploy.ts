@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import solc from "solc";
-import { createWalletClient, http, parseEther } from "viem";
+import { createWalletClient, createPublicClient, http, parseEther } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { filecoinCalibration } from "viem/chains";
 
@@ -83,6 +83,10 @@ async function main() {
 		chain: filecoinCalibration,
 		transport: http(RPC)
 	});
+	const publicClient = createPublicClient({
+		chain: filecoinCalibration,
+		transport: http(RPC)
+	});
 
 	console.log("Compiling contracts...");
 	const c = compile();
@@ -101,8 +105,7 @@ async function main() {
 		args: [TREASURY || account.address],
 		account
 	});
-	// @ts-ignore - waitForTransactionReceipt exists on client at runtime
-	const receiptContest = await client.waitForTransactionReceipt({ hash: hashContest });
+	const receiptContest = await publicClient.waitForTransactionReceipt({ hash: hashContest });
 	const contestAddress = receiptContest.contractAddress!;
 	console.log("LatentContest at", contestAddress);
 
@@ -113,8 +116,7 @@ async function main() {
 		args: [contestAddress],
 		account
 	});
-	// @ts-ignore - waitForTransactionReceipt exists on client at runtime
-	const receiptPM = await client.waitForTransactionReceipt({ hash: hashPM });
+	const receiptPM = await publicClient.waitForTransactionReceipt({ hash: hashPM });
 	const pmAddress = receiptPM.contractAddress!;
 	console.log("PredictionManager at", pmAddress);
 
@@ -125,8 +127,7 @@ async function main() {
 		args: [contestAddress, pmAddress, account.address],
 		account
 	});
-	// @ts-ignore - waitForTransactionReceipt exists on client at runtime
-	const receiptPP = await client.waitForTransactionReceipt({ hash: hashPP });
+	const receiptPP = await publicClient.waitForTransactionReceipt({ hash: hashPP });
 	const ppAddress = receiptPP.contractAddress!;
 	console.log("PrizePayout at", ppAddress);
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { setupPayments } from '../../../../lib/filecoin'
+// Use dynamic import to avoid bundling Synapse SDK
 import { ethers } from 'ethers'
 
 // Vercel serverless function configuration
@@ -44,8 +44,9 @@ export async function POST(request: NextRequest) {
       durationDays
     })
 
-    // Setup Filecoin payments using server private key
+    // Setup Filecoin payments using server private key (dynamic import)
     // This calls setupPayments which handles deposits and approvals
+    const { setupPayments } = await import('../../../../lib/filecoin')
     const result = await setupPayments(
       estimatedSizeBytes || 100 * 1024 * 1024, // Default 100MB
       durationDays || 30 // Default 30 days
